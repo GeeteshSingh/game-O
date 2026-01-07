@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
+import EnhancedDashboard from "./pages/EnhancedDashboard";
 import Games from "./pages/Games";
 import Friends from "./pages/Friends";
 import CalendarPage from "./pages/CalendarPage";
@@ -26,7 +27,7 @@ const App = () => (
           <main className="flex-1 ml-16 mb-16 sm:mb-0 sm:ml-0 p-4 md:p-6">
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard" element={<EnhancedDashboard />} />
               <Route path="/games" element={<Games />} />
               <Route path="/friends" element={<Friends />} />
               <Route path="/calendar" element={<CalendarPage />} />
