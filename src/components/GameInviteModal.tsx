@@ -19,8 +19,10 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
-import { CalendarIcon, Clock, MapPin } from 'lucide-react';
+import { CalendarIcon, Clock, MapPin, UserPlus } from 'lucide-react';
 import { format } from 'date-fns';
+import LocationAutocomplete from '@/components/LocationAutocomplete';
+import FriendInviteLink from '@/components/FriendInviteLink';
 
 const friends = [
   { id: 1, name: "Alex Johnson" },
@@ -35,10 +37,12 @@ const GameInviteModal = () => {
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState("18:00");
   const [location, setLocation] = useState("");
+  const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null);
   const [gameType, setGameType] = useState("");
   const [description, setDescription] = useState("");
   const [selectedFriends, setSelectedFriends] = useState<number[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [showInviteLink, setShowInviteLink] = useState(false);
 
   const toggleFriend = (id: number) => {
     setSelectedFriends(prev => 
@@ -48,9 +52,15 @@ const GameInviteModal = () => {
     );
   };
 
+  const handleLocationSelect = (address: string, coords: { lat: number; lng: number }) => {
+    setLocation(address);
+    setCoordinates(coords);
+  };
+
   const sendInvites = () => {
     // In a real app, this would send invitations to friends
     console.log("Sending invites to:", selectedFriends);
+    console.log("Game location coordinates:", coordinates);
     setIsOpen(false);
     // Reset form
     setSelectedFriends([]);
@@ -63,10 +73,11 @@ const GameInviteModal = () => {
       <DialogTrigger asChild>
         <Button>Invite Friends</Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Invite Friends to Game</DialogTitle>
         </DialogHeader>
+        
         <div className="space-y-4">
           <div>
             <Label htmlFor="game-type">Game Type</Label>
@@ -117,14 +128,12 @@ const GameInviteModal = () => {
           <div>
             <Label htmlFor="location">Location</Label>
             <div className="relative">
-              <Input
-                id="location"
-                placeholder="Where is the game?"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                className="pl-10"
+              <LocationAutocomplete 
+                onSelect={handleLocationSelect}
+                placeholder="Search for a location..."
+                defaultValue={location}
               />
-              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             </div>
           </div>
           
@@ -139,26 +148,45 @@ const GameInviteModal = () => {
           </div>
           
           <div>
-            <Label>Invite Friends</Label>
-            <div className="mt-2 grid grid-cols-2 gap-2 max-h-40 overflow-y-auto p-2 border rounded-md">
-              {friends.map((friend) => (
-                <div 
-                  key={friend.id} 
-                  className={`flex items-center p-2 rounded cursor-pointer ${
-                    selectedFriends.includes(friend.id) 
-                      ? 'bg-blue-100 border border-blue-300' 
-                      : 'hover:bg-gray-100'
-                  }`}
-                  onClick={() => toggleFriend(friend.id)}
-                >
-                  <div className="h-2 w-2 rounded-full bg-gray-300 mr-2" />
-                  <span className="text-sm">{friend.name}</span>
-                </div>
-              ))}
+            <div className="flex justify-between items-center mb-2">
+              <Label>Invite Friends</Label>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setShowInviteLink(!showInviteLink)}
+                className="text-xs"
+              >
+                <UserPlus className="h-3 w-3 mr-1" />
+                Generate Link
+              </Button>
             </div>
+            
+            {showInviteLink ? (
+              <FriendInviteLink />
+            ) : (
+              <div className="mt-2 grid grid-cols-2 gap-2 max-h-40 overflow-y-auto p-2 border rounded-md">
+                {friends.map((friend) => (
+                  <div 
+                    key={friend.id} 
+                    className={`flex items-center p-2 rounded cursor-pointer ${
+                      selectedFriends.includes(friend.id) 
+                        ? 'bg-blue-100 border border-blue-300' 
+                        : 'hover:bg-gray-100'
+                    }`}
+                    onClick={() => toggleFriend(friend.id)}
+                  >
+                    <div className="h-2 w-2 rounded-full bg-gray-300 mr-2" />
+                    <span className="text-sm">{friend.name}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           
-          <Button onClick={sendInvites} disabled={selectedFriends.length === 0 || !gameType}>
+          <Button 
+            onClick={sendInvites} 
+            disabled={selectedFriends.length === 0 || !gameType || !location}
+          >
             Send Invites ({selectedFriends.length})
           </Button>
         </div>

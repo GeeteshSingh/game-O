@@ -8,8 +8,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Star } from 'lucide-react';
+import { Star, UserPlus, Search } from 'lucide-react';
 import AnimatedFriendCard from '@/components/AnimatedFriendCard';
+import FriendInviteLink from '@/components/FriendInviteLink';
 
 const friends = [
   { id: 1, name: "Alex Johnson", avatar: "", sport: "Badminton", rating: 4.8 },
@@ -26,8 +27,9 @@ const EnhancedFriendsList = () => {
   const [selectedFriend, setSelectedFriend] = useState<typeof friends[0] | null>(null);
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
+  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
 
-  const filteredFriends = friends.filter(friend =>
+  const filteredFriends = friends.filter(friend => 
     friend.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -47,13 +49,33 @@ const EnhancedFriendsList = () => {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Friends</CardTitle>
+        <div className="flex justify-between items-center">
+          <CardTitle>Friends</CardTitle>
+          <Dialog open={isInviteDialogOpen} onOpenChange={setIsInviteDialogOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm">
+                <UserPlus className="h-4 w-4 mr-2" />
+                Invite
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Invite Friends</DialogTitle>
+              </DialogHeader>
+              <FriendInviteLink />
+            </DialogContent>
+          </Dialog>
+        </div>
         <div className="pt-2">
-          <Input
-            placeholder="Search friends..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input 
+              placeholder="Search friends..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
         </div>
       </CardHeader>
       <CardContent>
@@ -69,7 +91,7 @@ const EnhancedFriendsList = () => {
           </div>
         </ScrollArea>
       </CardContent>
-
+      
       <Dialog open={isRatingDialogOpen} onOpenChange={setIsRatingDialogOpen}>
         <DialogContent>
           <DialogHeader>
