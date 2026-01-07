@@ -10,6 +10,9 @@ import Games from "./pages/Games";
 import Friends from "./pages/Friends";
 import CalendarPage from "./pages/CalendarPage";
 import Profile from "./pages/Profile";
+import Messages from "./pages/Messages";
+import SearchPage from "./pages/SearchPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
 import InvitePage from "./pages/InvitePage";
 import NotFound from "./pages/NotFound";
 import Sidebar from "./components/Sidebar";
@@ -32,6 +35,9 @@ const App = () => (
               <Route path="/friends" element={<Friends />} />
               <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/messages" element={<Messages />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/analytics" element={<AnalyticsPage />} />
               <Route path="/invite/:userId" element={<InvitePage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
