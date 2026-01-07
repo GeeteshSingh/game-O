@@ -1,16 +1,14 @@
-"use client";
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Icons } from '@/components/icons';
+import { useAuth } from '@/components/AuthProvider';
 
 const StravaLogin = () => {
+  const { signInWithStrava } = useAuth();
+
   const handleStravaLogin = () => {
-    // In a real app, this would redirect to Strava's OAuth endpoint
-    // For demo purposes, we'll simulate a successful login
-    localStorage.setItem('stravaConnected', 'true');
-    window.location.reload();
+    signInWithStrava();
   };
 
   return (
@@ -25,10 +23,7 @@ const StravaLogin = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Button 
-          onClick={handleStravaLogin} 
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white"
-        >
+        <Button onClick={handleStravaLogin} className="w-full bg-orange-500 hover:bg-orange-600 text-white">
           <Icons.strava className="mr-2 h-4 w-4" />
           Connect Strava Account
         </Button>
