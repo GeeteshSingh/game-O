@@ -1,23 +1,23 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import StravaLogin from "@/components/StravaLogin";
-import EnhancedActivityFeed from "@/components/EnhancedActivityFeed";
-import EnhancedGameSelector from "@/components/EnhancedGameSelector";
-import EnhancedFriendsList from "@/components/EnhancedFriendsList";
-import EnhancedGameCalendar from "@/components/EnhancedGameCalendar";
-import DashboardStats from "@/components/DashboardStats";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { LogOut, Trophy, Calendar, Users, Activity } from "lucide-react";
 
 const Index = () => {
-  const [stravaConnected, setStravaConnected] = useState(
-    localStorage.getItem('stravaConnected') === 'true'
-  );
+  const [stravaConnected, setStravaConnected] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const isConnected = localStorage.getItem('stravaConnected') === 'true';
+    setStravaConnected(isConnected);
+    
+    if (isConnected) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('stravaConnected');
@@ -50,57 +50,32 @@ const Index = () => {
           className="flex justify-between items-center py-6 mb-6"
         >
           <h1 className="text-3xl font-bold text-gray-900">SportConnect</h1>
-          <Button variant="outline" onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
+          <button 
+            onClick={handleLogout}
+            className="px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+          >
             Disconnect Strava
-          </Button>
+          </button>
         </motion.header>
 
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.5 }}
+          className="text-center py-12"
         >
-          <DashboardStats />
-        </motion.div>
-
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6"
-        >
-          <div className="lg:col-span-2">
-            <EnhancedActivityFeed />
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Welcome to SportConnect</h2>
+          <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+            Connect with friends, schedule games, and track your sports activities - all in one place.
+          </p>
+          <div className="flex justify-center space-x-4">
+            <button 
+              onClick={() => navigate('/dashboard')}
+              className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Go to Dashboard
+            </button>
           </div>
-          <div>
-            <EnhancedGameSelector />
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-        >
-          <Tabs defaultValue="friends" className="mb-6">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="friends" className="flex items-center">
-                <Users className="mr-2 h-4 w-4" />
-                Friends
-              </TabsTrigger>
-              <TabsTrigger value="calendar" className="flex items-center">
-                <Calendar className="mr-2 h-4 w-4" />
-                Game Calendar
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="friends">
-              <EnhancedFriendsList />
-            </TabsContent>
-            <TabsContent value="calendar">
-              <EnhancedGameCalendar />
-            </TabsContent>
-          </Tabs>
         </motion.div>
       </div>
       <MadeWithDyad />

@@ -180,3 +180,12 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #a1a1a1;
 }
+
+/* Sidebar styles */
+.sidebar {
+  transition: all 0.3s ease;
+}
+
+.sidebar-mobile {
+  transition: transform 0.3s ease;
+}
